@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ultimate-system/contracts": [
+        "packages/contracts/src/index.ts"
+      ],
+      "@ultimate-system/core": [
+        "packages/core/src/index.ts"
+      ],
+      "@ultimate-system/sqlite-store": [
+        "packages/sqlite-store/src/index.ts"
+      ]
+    }
+  }
+}

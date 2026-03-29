@@ -1,0 +1,45 @@
+{
+  "name": "devintelligence-mcp-server",
+  "version": "1.0.0",
+  "description": "Ultimate Development Environment Intelligence MCP Server - AI-powered development companion for code analysis, shell execution, GitHub integration, and project management",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "devintelligence-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "development",
+    "code-analysis",
+    "github",
+    "shell",
+    "productivity"
+  ],
+  "author": "AI Assistant",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "axios": "^1.7.9",
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2",
+    "glob": "^11.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

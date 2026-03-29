@@ -1,0 +1,13 @@
+[project]
+name = "omega-network-mcp"
+version = "1.0.0"
+description = "Network diagnostics and connectivity MCP server"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "structlog>=24.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

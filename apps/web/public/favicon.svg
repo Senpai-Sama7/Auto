@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ultimate System">
+  <!-- Top Face -->
+  <polygon points="256,128 368,192 256,256 144,192" fill="#E8DBC3" />
+  <!-- Left Face -->
+  <polygon points="144,192 256,256 256,384 144,320" fill="#004E64" />
+  <!-- Right Face -->
+  <polygon points="256,256 368,192 368,320 256,384" fill="#B6421C" />
+  <!-- Inner Top Face -->
+  <polygon points="256,158 338,206 256,254 174,206" fill="#F3EDE0" />
+  <!-- Inner Left Face -->
+  <polygon points="174,222 240,260 240,350 174,312" fill="#056A88" />
+  <!-- Inner Right Face -->
+  <polygon points="272,260 338,222 338,312 272,350" fill="#D95022" />
+</svg>

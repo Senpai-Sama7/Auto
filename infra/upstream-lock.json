@@ -1,0 +1,27 @@
+{
+  "paperclip": {
+    "repo": "https://github.com/paperclipai/paperclip.git",
+    "ref": "0ac01a04e5a83e487ee5069338f8fbe91ed445af",
+    "dir": ".cache/upstreams/paperclip"
+  },
+  "hermes-agent": {
+    "repo": "https://github.com/NousResearch/hermes-agent.git",
+    "ref": "b6b87dedd4acdee8d8dca32062fc45edcb049a69",
+    "dir": ".cache/upstreams/hermes-agent"
+  },
+  "gstack": {
+    "repo": "https://github.com/garrytan/gstack.git",
+    "ref": "11695e3acafe16d5a524ce37c243714b9eb6d154",
+    "dir": ".cache/upstreams/gstack"
+  },
+  "superpowers": {
+    "repo": "https://github.com/obra/superpowers.git",
+    "ref": "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06",
+    "dir": ".cache/upstreams/superpowers"
+  },
+  "openclaw": {
+    "repo": "https://github.com/openclaw/openclaw.git",
+    "ref": "840b806c2f7b04f5b76410d75b81459a807809ec",
+    "dir": ".cache/upstreams/openclaw"
+  }
+}

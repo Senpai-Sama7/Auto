@@ -1,0 +1,37 @@
+[
+  {
+    "prompt": "What is 2+2?",
+    "constraints": "",
+    "expected_output": "4",
+    "ambiguity_expected": false,
+    "expected_technique": "DIRECT"
+  },
+  {
+    "prompt": "Explain why large language models struggle with arithmetic",
+    "constraints": "Include tokenization and architecture reasons",
+    "expected_output": "LLMs struggle with arithmetic because tokenization breaks numbers into subword units, transformer architecture is optimized for pattern matching not symbolic manipulation, and training data contains text not execution traces.",
+    "ambiguity_expected": false,
+    "expected_technique": "CoT"
+  },
+  {
+    "prompt": "Help me",
+    "constraints": "",
+    "expected_output": null,
+    "ambiguity_expected": true,
+    "expected_technique": null
+  },
+  {
+    "prompt": "Write a function to find prime numbers up to N",
+    "constraints": "Python, efficient, include tests",
+    "expected_output": "def is_prime...",
+    "ambiguity_expected": false,
+    "expected_technique": "PAL"
+  },
+  {
+    "prompt": "Create a haiku about AI",
+    "constraints": "Traditional 5-7-5 syllable structure",
+    "expected_output": "Silicon mind thinks / Patterns emerge from the void / Understanding grows",
+    "ambiguity_expected": false,
+    "expected_technique": "SELF_REFINE"
+  }
+]

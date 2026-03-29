@@ -1,0 +1,14 @@
+[project]
+name = "omega-security-mcp"
+version = "1.0.0"
+description = "Cybersecurity and threat intelligence MCP server"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "structlog>=24.0.0",
+    "requests>=2.31.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

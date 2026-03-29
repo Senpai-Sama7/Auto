@@ -1,0 +1,51 @@
+<evaluation>
+  <qa_pair>
+    <question>Use the fs_list_directory tool to list the current directory. How many TypeScript files (*.ts) are in the src/tools directory?</question>
+    <answer>5</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Read the package.json file and tell me what version the server is at.</question>
+    <answer>1.0.0</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use shell_execute to run "echo Hello from MCP". What is the stdout output?</question>
+    <answer>Hello from MCP</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use search_grep to find occurrences of "GITHUB_TOKEN" in the source code. What file contains this string in a console.error statement?</question>
+    <answer>index.ts</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Read the first 20 lines of src/index.ts. What is the name of the constant SERVER_NAME?</question>
+    <answer>devintelligence-mcp-server</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use fs_get_file_info on the README.md file. What is the file type returned?</question>
+    <answer>file</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use search_find_definitions to find where the function "registerFilesystemTools" is defined. What file is it in?</question>
+    <answer>filesystem.ts</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use shell_execute to run "git log --oneline -1" in the current directory. Does the command succeed (exit code 0)? Answer "yes" or "no".</question>
+    <answer>no</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Read the tsconfig.json file. What is the value of "target" in compilerOptions?</question>
+    <answer>ES2022</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>Use fs_search_files with pattern "*.json" and path ".". How many JSON files are found in the project root (not counting subdirectories)?</question>
+    <answer>2</answer>
+  </qa_pair>
+</evaluation>

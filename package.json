@@ -1,0 +1,41 @@
+{
+  "name": "ultimate-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,worker,web -c blue,green,magenta \"pnpm --filter @ultimate-system/control-plane dev\" \"pnpm --filter @ultimate-system/worker dev\" \"pnpm --filter @ultimate-system/web dev\"",
+    "dev:api": "pnpm --filter @ultimate-system/control-plane dev",
+    "dev:worker": "pnpm --filter @ultimate-system/worker dev",
+    "dev:web": "pnpm --filter @ultimate-system/web dev",
+    "bootstrap:upstreams": "node scripts/bootstrap-upstreams.mjs",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "demo": "tsx scripts/demo.ts",
+    "canary": "tsx scripts/canary.ts",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "release:local": "tsx scripts/release.ts",
+    "setup": "bash scripts/setup.sh",
+    "clean": "node scripts/clean.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^24.6.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^3.2.4"
+  }
+}

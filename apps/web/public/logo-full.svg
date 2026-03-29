@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 256" role="img" aria-label="Ultimate System Logo">
+  <g transform="translate(-112, -128)">
+    <polygon points="256,128 368,192 256,256 144,192" fill="#E8DBC3" />
+    <polygon points="144,192 256,256 256,384 144,320" fill="#004E64" />
+    <polygon points="256,256 368,192 368,320 256,384" fill="#B6421C" />
+    <polygon points="256,158 338,206 256,254 174,206" fill="#F3EDE0" />
+    <polygon points="174,222 240,260 240,350 174,312" fill="#056A88" />
+    <polygon points="272,260 338,222 338,312 272,350" fill="#D95022" />
+  </g>
+  <text x="288" y="156" font-family="'Fraunces', serif" font-weight="700" font-size="80" fill="#004E64">Ultimate<tspan fill="#B6421C"> System</tspan></text>
+</svg>

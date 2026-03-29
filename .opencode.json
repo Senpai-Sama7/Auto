@@ -1,0 +1,4 @@
+{
+  "model": "openrouter/anthropic/claude-sonnet-4",
+  "provider": "openrouter"
+}

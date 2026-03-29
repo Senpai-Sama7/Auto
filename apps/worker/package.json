@@ -1,0 +1,17 @@
+{
+  "name": "@ultimate-system/worker",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@ultimate-system/contracts": "workspace:*",
+    "@ultimate-system/core": "workspace:*",
+    "@ultimate-system/sqlite-store": "workspace:*",
+    "bullmq": "^5.61.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "devintelligence": {
+      "command": "node",
+      "args": ["/home/donovan/devintelligence-mcp-server/dist/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "your_github_token_here"
+      }
+    }
+  }
+}
