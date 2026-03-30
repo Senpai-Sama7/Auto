@@ -5,7 +5,6 @@
  */
 
 import { spawn } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
 
 const API_BASE = process.env.ULTIMATE_SYSTEM_API_BASE || 'http://localhost:4100';
 

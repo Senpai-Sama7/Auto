@@ -82,6 +82,7 @@ function toOrg(row: Row): Org {
     mission: text(row.mission),
     monthlyBudgetUsd: numeric(row.monthly_budget_usd),
     spentBudgetUsd: numeric(row.spent_budget_usd),
+    lastBudgetResetAt: nullableText(row.last_budget_reset_at),
     createdAt: text(row.created_at)
   };
 }
@@ -146,6 +147,7 @@ function toWorker(row: Row): WorkerRecord {
     executionModes: parseJson<WorkerRecord["executionModes"]>(row.execution_modes_json, ["deterministic"]),
     monthlyBudgetUsd: numeric(row.monthly_budget_usd),
     spentBudgetUsd: numeric(row.spent_budget_usd),
+    lastBudgetResetAt: nullableText(row.last_budget_reset_at),
     lastHeartbeatAt: nullableText(row.last_heartbeat_at),
     lastSummary: nullableText(row.last_summary),
     createdAt: text(row.created_at),
@@ -306,6 +308,8 @@ export class SqlitePlatformStore implements Stores, ControlPlaneQuery {
     });
     this.db.exec(schemaSql);
     this.ensureColumn("sessions", "auth_method", "TEXT NOT NULL DEFAULT 'password'");
+    this.ensureColumn("orgs", "last_budget_reset_at", "TEXT");
+    this.ensureColumn("workers", "last_budget_reset_at", "TEXT");
   }
 
   close(): void {
@@ -313,6 +317,11 @@ export class SqlitePlatformStore implements Stores, ControlPlaneQuery {
   }
 
   private ensureColumn(tableName: string, columnName: string, definitionSql: string): void {
+    // SECURITY: Strictly validate identifiers to prevent SQL injection in DDL
+    const validIdentifier = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+    if (!validIdentifier.test(tableName)) throw new Error(`Invalid table name: ${tableName}`);
+    if (!validIdentifier.test(columnName)) throw new Error(`Invalid column name: ${columnName}`);
+
     const columns = allRows(this.db.prepare(`PRAGMA table_info(${tableName})`));
     const hasColumn = columns.some((column) => text(column.name) === columnName);
     if (!hasColumn) {
@@ -970,6 +979,43 @@ export class SqlitePlatformStore implements Stores, ControlPlaneQuery {
     ).map(toTeam);
   }
 
+  async resetMonthlyBudgets(): Promise<{ orgsReset: number; workersReset: number }> {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const resetTimestamp = nowIso();
+
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      // Reset org budgets where last reset was in a different month
+      const orgResult = this.db.prepare(
+        `UPDATE orgs
+         SET spent_budget_usd = 0,
+             last_budget_reset_at = ?
+         WHERE last_budget_reset_at IS NULL
+            OR strftime('%Y-%m', last_budget_reset_at) != ?`
+      ).run(resetTimestamp, currentMonth);
+
+      // Reset worker budgets where last reset was in a different month
+      const workerResult = this.db.prepare(
+        `UPDATE workers
+         SET spent_budget_usd = 0,
+             last_budget_reset_at = ?
+         WHERE last_budget_reset_at IS NULL
+            OR strftime('%Y-%m', last_budget_reset_at) != ?`
+      ).run(resetTimestamp, currentMonth);
+
+      this.db.exec("COMMIT");
+
+      return {
+        orgsReset: Number(orgResult.changes),
+        workersReset: Number(workerResult.changes)
+      };
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+  }
+
   async createSession(session: WorkerSession): Promise<void> {
     this.db.prepare(
       `INSERT INTO worker_sessions (id, worker_id, task_id, status, started_at, ended_at, recall_summary)
@@ -1009,15 +1055,28 @@ export class SqlitePlatformStore implements Stores, ControlPlaneQuery {
   }
 
   async searchMemory(workerId: string, query: string, limit: number): Promise<MemoryEntry[]> {
+    // Sanitize query for FTS5 - escape special characters and use prefix matching
+    const sanitizedQuery = query
+      .replace(/[^\w\s]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .map((term) => `"${term}"*`)
+      .join(" ");
+
+    if (!sanitizedQuery) {
+      return [];
+    }
+
     return allRows(
       this.db.prepare(
-        `SELECT * FROM memory_entries
-         WHERE worker_id = ? AND content LIKE ?
-         ORDER BY created_at DESC
+        `SELECT m.* FROM memory_entries m
+         INNER JOIN memory_entries_fts fts ON m.rowid = fts.rowid
+         WHERE m.worker_id = ? AND memory_entries_fts MATCH ?
+         ORDER BY rank
          LIMIT ?`
       ),
       workerId,
-      `%${query}%`,
+      sanitizedQuery,
       limit
     ).map(toMemory);
   }

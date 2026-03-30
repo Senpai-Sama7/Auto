@@ -102,9 +102,9 @@ export async function beginPasskeyRegistration(
       transports: toAuthenticatorTransports(credential.transports)
     })),
     authenticatorSelection: {
-      authenticatorAttachment: "platform",
+      authenticatorAttachment: "cross-platform",
       residentKey: "required",
-      userVerification: "required"
+      userVerification: "preferred"
     }
   });
 

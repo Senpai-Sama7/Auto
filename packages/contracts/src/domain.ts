@@ -47,7 +47,8 @@ export const EventTypeSchema = z.enum([
   "worker.heartbeat",
   "memory.appended",
   "gate.updated",
-  "execution.recorded"
+  "execution.recorded",
+  "budget.reset"
 ]);
 export type EventType = z.infer<typeof EventTypeSchema>;
 
@@ -222,6 +223,7 @@ export const OrgSchema = z.object({
   mission: z.string(),
   monthlyBudgetUsd: z.number(),
   spentBudgetUsd: z.number(),
+  lastBudgetResetAt: z.string().nullable(),
   createdAt: z.string()
 });
 export type Org = z.infer<typeof OrgSchema>;
@@ -248,6 +250,7 @@ export const WorkerRecordSchema = z.object({
   executionModes: z.array(ExecutionModeSchema),
   monthlyBudgetUsd: z.number(),
   spentBudgetUsd: z.number(),
+  lastBudgetResetAt: z.string().nullable(),
   lastHeartbeatAt: z.string().nullable(),
   lastSummary: z.string().nullable(),
   createdAt: z.string(),

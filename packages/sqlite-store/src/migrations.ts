@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS orgs (
   mission TEXT NOT NULL,
   monthly_budget_usd REAL NOT NULL,
   spent_budget_usd REAL NOT NULL,
+  last_budget_reset_at TEXT,
   created_at TEXT NOT NULL
 );
 
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS workers (
   execution_modes_json TEXT NOT NULL,
   monthly_budget_usd REAL NOT NULL,
   spent_budget_usd REAL NOT NULL,
+  last_budget_reset_at TEXT,
   last_heartbeat_at TEXT,
   last_summary TEXT,
   created_at TEXT NOT NULL,
@@ -168,6 +170,36 @@ CREATE TABLE IF NOT EXISTS memory_entries (
 );
 
 CREATE INDEX IF NOT EXISTS idx_memory_worker_id ON memory_entries (worker_id, created_at DESC);
+
+-- Full-text search virtual table for memory entries
+CREATE VIRTUAL TABLE IF NOT EXISTS memory_entries_fts USING fts5(
+  id UNINDEXED,
+  worker_id UNINDEXED,
+  task_id UNINDEXED,
+  category UNINDEXED,
+  content,
+  created_at UNINDEXED,
+  content='memory_entries',
+  content_rowid='rowid'
+);
+
+-- Triggers to keep FTS table in sync with memory_entries
+CREATE TRIGGER IF NOT EXISTS memory_entries_ai AFTER INSERT ON memory_entries BEGIN
+  INSERT INTO memory_entries_fts(rowid, id, worker_id, task_id, category, content, created_at)
+  VALUES (new.rowid, new.id, new.worker_id, new.task_id, new.category, new.content, new.created_at);
+END;
+
+CREATE TRIGGER IF NOT EXISTS memory_entries_ad AFTER DELETE ON memory_entries BEGIN
+  INSERT INTO memory_entries_fts(memory_entries_fts, rowid, id, worker_id, task_id, category, content, created_at)
+  VALUES ('delete', old.rowid, old.id, old.worker_id, old.task_id, old.category, old.content, old.created_at);
+END;
+
+CREATE TRIGGER IF NOT EXISTS memory_entries_au AFTER UPDATE ON memory_entries BEGIN
+  INSERT INTO memory_entries_fts(memory_entries_fts, rowid, id, worker_id, task_id, category, content, created_at)
+  VALUES ('delete', old.rowid, old.id, old.worker_id, old.task_id, old.category, old.content, old.created_at);
+  INSERT INTO memory_entries_fts(rowid, id, worker_id, task_id, category, content, created_at)
+  VALUES (new.rowid, new.id, new.worker_id, new.task_id, new.category, new.content, new.created_at);
+END;
 
 CREATE TABLE IF NOT EXISTS worker_sessions (
   id TEXT PRIMARY KEY,

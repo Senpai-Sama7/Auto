@@ -1017,7 +1017,7 @@ program.parse(process.argv);
 // MONETIZATION COMMANDS
 // ============================================================================
 
-async function cmdServices(client, options) {
+async function cmdServices() {
   intro(c.bgMagenta.black(' SERVICE CATALOG '));
   
   console.log('\n' + c.bold('Available Services:\n'));
@@ -1221,8 +1221,7 @@ program
   .alias('catalog')
   .description('View available services')
   .action(async () => {
-    const client = new UltimateClient(program.opts().url);
-    await cmdServices(client);
+    await cmdServices();
   });
 
 program

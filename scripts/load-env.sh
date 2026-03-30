@@ -10,8 +10,10 @@ load_env_file() {
 
   while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
     line="${raw_line%$'\r'}"
+    # Skip empty lines, comments, or lines starting with '-'
     [[ -z "$line" ]] && continue
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ "$line" =~ ^[[:space:]]*- ]] && continue
     [[ "$line" != *=* ]] && continue
 
     key="${line%%=*}"
@@ -19,6 +21,11 @@ load_env_file() {
 
     key="${key#"${key%%[![:space:]]*}"}"
     key="${key%"${key##*[![:space:]]}"}"
+
+    # Only export if key is valid (no leading dashes or spaces)
+    if [[ ! "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+      continue
+    fi
 
     if [[ "$value" =~ ^\".*\"$ ]] || [[ "$value" =~ ^\'.*\'$ ]]; then
       value="${value:1:${#value}-2}"

@@ -256,11 +256,12 @@ describe("orchestration hardening", () => {
 
       const result = await runService.runNext(providerWorker.id);
       const events = await store.listByTask(task.id);
+      const updatedTask = await store.getTask(task.id);
 
-      expect(result?.status).toBe("failed");
-      expect(result?.lastError).toContain("budget");
+      expect(result).toBeNull();
+      expect(updatedTask?.status).toBe("queued");
       expect(adapter.calls).toBe(0);
-      expect(events.some((event) => event.eventType === "task.failed")).toBe(true);
+      expect(events.some((event) => event.eventType === "task.claimed")).toBe(false);
     } finally {
       cleanupTempDir(dir);
     }

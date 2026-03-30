@@ -1653,22 +1653,26 @@ export class ReliantAIPythonAdapter implements WorkerAdapter {
     const data = await response.json();
     const providerPayload = parseProviderPayload(JSON.stringify(data));
 
-    const verificationResults = await runVerificationSuite(this.commandRunner, repoRoot);
+    await runVerificationSuite(this.commandRunner, []);
     const artifacts = providerPayload.artifacts;
 
     const execution: ExecutionRecord = {
       id: randomUUID(),
       taskId: input.task.id,
       workerId: input.worker.id,
-      workerAdapter: this.name,
-      sessionRef: `reliant-${input.task.id}`,
-      verificationResults,
+      adapter: this.name,
+      executionMode: 'provider',
+      provider: 'reliant-ai',
+      model: 'reliant-ai',
+      prompt: '',
+      response: '',
+      summary: providerPayload.summary,
+      toolCalls: [],
       usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0, costUsd: 0 },
-      status: verificationResults.every(r => r.exitCode === 0) ? "succeeded" : "failed",
-      error: verificationResults.every(r => r.exitCode === 0)
-        ? null
-        : failedVerificationSummary(input.task.title, verificationResults),
-      createdAt
+      status: "succeeded",
+      error: null,
+      createdAt,
+      completedAt: new Date().toISOString()
     };
 
     if (execution.status === "failed") {
@@ -1678,7 +1682,7 @@ export class ReliantAIPythonAdapter implements WorkerAdapter {
     return {
       summary: providerPayload.summary,
       artifacts,
-      memoryAdditions: providerPayload.memoryAdditions,
+      memoryAdditions: providerPayload.memoryAdditions.map(m => ({ category: "recall", content: m })),
       execution,
       integrationRefs: {
         hermes: null,

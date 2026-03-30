@@ -40,3 +40,14 @@ export const viewerName = process.env.ULTIMATE_SYSTEM_VIEWER_NAME ?? "Local View
 
 export const reliantAiAuthUrl = process.env.RELIANTAI_AUTH_URL;
 export const reliantAiEventBusUrl = process.env.RELIANTAI_EVENT_BUS_URL;
+export const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+
+// Revenue Orchestrator Configuration
+export const revenueEnabled = process.env.REVENUE_DISABLED !== "true";
+export const revenueAutoStart = process.env.REVENUE_AUTO_START === "true";
+export const revenueDiscoveryInterval = Number(process.env.REVENUE_DISCOVERY_INTERVAL ?? "15");
+export const revenueMaxDailyTasks = Number(process.env.REVENUE_MAX_DAILY_TASKS ?? "50");
+export const revenueBudgetPerTask = Number(process.env.REVENUE_BUDGET_PER_TASK ?? "2.0");
+export const apexMcpEndpoint = process.env.APEX_MCP_ENDPOINT ?? "http://localhost:4000";
+export const moneyEndpoint = process.env.MONEY_ENDPOINT ?? "http://localhost:8000";
+export const clearDeskEndpoint = process.env.CLEARDESK_ENDPOINT ?? "https://clear-desk-ten.vercel.app";

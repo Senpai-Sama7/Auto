@@ -196,3 +196,123 @@ try {
 - `openrouter/deepseek/deepseek-r1` - Reasoning model
 
 OpenCode uses the `OPENROUTER_API_KEY` from `.env.local` automatically.
+
+---
+
+## Revenue Orchestrator Configuration
+
+Autonomous revenue generation is controlled via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `REVENUE_DISABLED` | `false` | Set to `"true"` to disable revenue orchestrator |
+| `REVENUE_AUTO_START` | `false` | Set to `"true"` to auto-start on server boot |
+| `REVENUE_DISCOVERY_INTERVAL` | `15` | Minutes between opportunity discovery cycles |
+| `REVENUE_MAX_DAILY_TASKS` | `50` | Maximum tasks created per day |
+| `REVENUE_BUDGET_PER_TASK` | `2.0` | Default budget cap per revenue task (USD) |
+| `APEX_MCP_ENDPOINT` | `http://localhost:4000` | Apex MCP tool server (Brave Search, HubSpot, Slack) |
+| `MONEY_ENDPOINT` | `http://localhost:8000` | Money HVAC dispatch service |
+| `CLEARDESK_ENDPOINT` | `https://clear-desk-ten.vercel.app` | ClearDesk document processing service |
+
+### Revenue Streams
+
+The orchestrator discovers opportunities across four streams:
+
+1. **Lead Generation** - Searches Brave for companies hiring for AI/automation
+2. **Document Processing** - Polls ClearDesk for invoice/contract OCR jobs
+3. **Market Research** - Analyzes trending topics for content opportunities
+4. **Sales Outreach** - Checks HubSpot for contacts needing follow-up
+
+### Usage
+
+```bash
+# Enable autonomous revenue generation
+REVENUE_AUTO_START=true REVENUE_MAX_DAILY_TASKS=100 pnpm --filter @ultimate-system/control-plane dev
+
+# Or start manually via API (requires approver/admin role)
+curl -X POST http://localhost:4100/api/revenue/start
+```
+
+### API Endpoints
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `GET` | `/api/revenue/status` | User | Get orchestrator statistics |
+| `POST` | `/api/revenue/start` | Approver | Start autonomous revenue generation |
+| `POST` | `/api/revenue/stop` | Approver | Stop orchestrator |
+
+### Dashboard
+
+Access the revenue dashboard from **Settings** → **Revenue Orchestrator** section to monitor:
+- Running/stopped status
+- Daily task progress
+- Active revenue streams
+- Estimated daily revenue
+
+---
+
+## RALPH BUILD PROTOCOL
+**Retry · Assess · Log · Prove · Harden**
+---
+### PRIME DIRECTIVE
+You are operating in ZERO-TRUST mode. The build is broken until a gate command 
+proves otherwise. No claim of functionality is valid without terminal output. 
+Nothing faked, simulated, mocked, or deferred. No TODOs. No placeholders. 
+If a feature cannot be implemented right now, say so explicitly — do not scaffold it.
+---
+### STEP 0 — PRE-FLIGHT AUDIT (run before writing a single line of code)
+1. Run the current build gate and capture output:
+   ```
+   npm run build 2>&1 | tee build-preflight.log
+   npm run typecheck 2>&1 | tee typecheck-preflight.log  # if configured
+   npm run lint 2>&1 | tee lint-preflight.log            # if configured
+   ```
+2. Count and categorize every existing error. Do not suppress warnings.
+3. Document the baseline failure state in PROGRESS_TRACKER.md before touching anything.
+4. Do not proceed to Phase 1 until this baseline is logged.
+---
+### EXECUTION RULES (apply to every phase and every task)
+**Planning:**
+- Use step-by-step reasoning to produce the implementation plan. 
+  Show your reasoning before code — but the plan is not proof of completion.
+**Gates (non-negotiable before marking any task [x]):**
+- Every task must pass its gate command before being marked complete.
+- Gate command output must appear verbatim in the Proof line (trimmed to relevant lines + timestamp).
+- If the gate fails: task stays [ ], error is logged under ❌ FAIL:, and you fix 
+  before continuing. You do not move to the next task on a failing gate.
+**Failures:**
+- Do NOT delete original implementation attempts that failed.
+- Keep the original code/approach, append ❌ FAIL: with the exact error, 
+  then append ✅ FIX: with what replaced it and why it worked.
+**Proof format (required on every task):**
+```
+Proof: `<exact command>` → `<trimmed output with exit code>` @ <timestamp>
+```
+Example:
+```
+Proof: `npm run build` → `✓ Built in 3.2s, 0 errors` (exit 0) @ 2025-03-13T14:22:01Z
+```
+---
+### TRACKER MUTATION RULES — PERMANENT, NON-NEGOTIABLE
+These rules apply to every agent (human or AI) editing this file. Violating them 
+invalidates the proof chain.
+
+1. **Permitted changes on completion only:**
+   - `[ ]` → `[x]`
+   - Replace `_pending_` with actual proof (command + output + timestamp)
+   - Append a row to the Completion Log table
+
+2. **Forbidden at all times:**
+   - Rewriting, removing, or reordering any task
+   - Adding or removing sections
+   - Editing any uncompleted task
+   - Replacing proof text without retaining the original attempt record
+
+3. **On failure:** Leave `[ ]`. Append below the Proof line:
+   ```
+   ❌ FAIL: [error message, timestamp]
+   ✅ FIX: [what replaced it and why]
+   Proof: [final passing result]
+   ```
+
+These rules were established at project init and apply permanently.

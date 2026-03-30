@@ -182,6 +182,14 @@ export class WorkerRunService {
       if (task.status !== "queued" || task.approvalState !== "approved") {
         continue;
       }
+      
+      // Upstream quota reservation check
+      const org = await this.stores.getOrg(task.orgId);
+      if (!org) continue;
+      
+      const budgetDecision = this.budgetPolicy.canDispatch(task, worker, org);
+      if (!budgetDecision.allowed) continue;
+
       const dispatchDecision = this.dispatchPolicy.canWorkerExecute(task, worker);
       if (!dispatchDecision.allowed) {
         continue;
@@ -192,7 +200,8 @@ export class WorkerRunService {
         await this.stores.publish(
           makeEvent("task.claimed", worker.name, {
             workerId,
-            executionMode: claimed.executionMode
+            executionMode: claimed.executionMode,
+            estimatedCostUsd: budgetDecision.estimatedCostUsd
           }, claimed.id, workerId)
         );
         return claimed;
@@ -448,5 +457,57 @@ export class WorkerRunService {
     }
 
     return (await this.stores.getTask(task.id)) ?? task;
+  }
+}
+
+export class BudgetResetService {
+  private intervalId: ReturnType<typeof setInterval> | null = null;
+
+  constructor(
+    private readonly stores: Stores,
+    private readonly resetCheckIntervalMs: number = 60 * 60 * 1000 // Check hourly by default
+  ) {}
+
+  start(): void {
+    if (this.intervalId) {
+      return;
+    }
+
+    // Run immediately on start
+    this.checkAndReset();
+
+    // Then schedule periodic checks
+    this.intervalId = setInterval(() => {
+      this.checkAndReset();
+    }, this.resetCheckIntervalMs);
+  }
+
+  stop(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private async checkAndReset(): Promise<void> {
+    try {
+      const result = await this.stores.resetMonthlyBudgets();
+      if (result.orgsReset > 0 || result.workersReset > 0) {
+        await this.stores.publish(
+          makeEvent("budget.reset", "budget-reset-service", {
+            orgsReset: result.orgsReset,
+            workersReset: result.workersReset,
+            resetAt: nowIso()
+          })
+        );
+      }
+    } catch (error) {
+      console.error("BudgetResetService: Failed to reset budgets:", error);
+    }
+  }
+
+  // Manual trigger for immediate reset
+  async triggerReset(): Promise<{ orgsReset: number; workersReset: number }> {
+    return this.stores.resetMonthlyBudgets();
   }
 }

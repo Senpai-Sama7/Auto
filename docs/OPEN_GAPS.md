@@ -14,13 +14,13 @@ This file tracks real remaining limits, not missing-core-feature theater.
 
 ## Cost And Budget Accuracy
 
-- Pre-dispatch provider cost is still estimated from local pricing tables.
-- Actual usage and cost are recorded after execution, but there is no upstream quota reservation before dispatch.
-- Monthly budgets do not auto-reset on a calendar schedule yet.
+- ✅ Pre-dispatch quota reservation is now enforced via `BudgetPolicy.canDispatch()` before task claim.
+- ✅ Monthly budgets auto-reset on calendar month boundaries via `BudgetResetService`.
+- Actual usage and cost are recorded after execution.
 
 ## Search And Observability
 
-- Worker memory search is currently `LIKE`-based rather than full-text indexed.
+- ✅ Worker memory search now uses SQLite FTS5 full-text search with prefix matching and rank-based ordering.
 - Audit history, execution records, and release decisions are stored locally in SQLite and JSON files; there is no external telemetry sink or signed event stream.
 
 ## Production Packaging

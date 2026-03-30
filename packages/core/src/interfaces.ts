@@ -70,6 +70,7 @@ export interface OrgStore {
   getOrg(orgId: string): Promise<Org | null>;
   listTeams(orgId: string): Promise<Team[]>;
   seedDefaults(worker?: WorkerRecord | null): Promise<void>;
+  resetMonthlyBudgets(): Promise<{ orgsReset: number; workersReset: number }>;
 }
 
 export interface MemoryStore {

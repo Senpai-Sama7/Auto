@@ -33,6 +33,7 @@ export function createDefaultOrg(): Org {
     mission: "Route work through a governed control plane and complete it through durable workers.",
     monthlyBudgetUsd: 2500,
     spentBudgetUsd: 0,
+    lastBudgetResetAt: null,
     createdAt: nowIso()
   };
 }
@@ -52,6 +53,7 @@ export function createDefaultWorker(executionModes: ExecutionMode[] = ["determin
     executionModes,
     monthlyBudgetUsd: 750,
     spentBudgetUsd: 0,
+    lastBudgetResetAt: null,
     lastHeartbeatAt: null,
     lastSummary: null,
     createdAt: timestamp,
