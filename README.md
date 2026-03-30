@@ -10,19 +10,30 @@ Ultimate System is a pinned-integration monorepo that composes five upstream pro
 - `obra/superpowers` for the execution discipline encoded in templates and workflow
 - `garrytan/gstack` for product, engineering, QA, security, and release hardening patterns
 
-This repository is not a thought exercise or a demo scaffold. The supported path boots real upstream Paperclip, Hermes, and OpenClaw services from pinned checkouts, routes work through Redis-backed BullMQ queues, persists state in SQLite, runs verification in Docker, and exposes the full lifecycle through an authenticated control plane and dashboard.
+This repository is not a thought exercise or a demo scaffold. The supported path boots real upstream Paperclip, Hermes, and OpenClaw services from pinned checkouts, routes work through Redis-backed BullMQ queues, persists state in SQLite, runs verification in Docker, and exposes the full lifecycle through an authenticated premium control plane and immersive dashboard.
+
+## 0. Build & Engineering Protocol (RALPH)
+
+All contributions and system modifications follow the **RALPH Build Protocol**:
+- **Retry**: Robust error handling and automatic retry logic.
+- **Assess**: Pre-flight audits and impact analysis before changes.
+- **Log**: Comprehensive logging of build gates and runtime events.
+- **Prove**: Verifiable proof via terminal output for every task completion.
+- **Harden**: Zero-trust security, strict input validation (Zod), and RBAC enforcement.
+
+Refer to `AGENTS.md` and `PROGRESS_TRACKER.md` for the current system state and audit trails.
 
 ## 1. What This System Does
 
 At a high level, Ultimate System lets you:
 
-1. create work in the control plane
-2. approve or reject it with role-backed identity
+1. create work in the control plane (Manual or AI-assisted via Chat)
+2. approve or reject it with role-backed identity (RBAC)
 3. route it to a worker through Redis + BullMQ
 4. execute it through a deterministic or provider-backed runtime with **secure, sandboxed command execution** and **dynamic markdown-based skill loading**
 5. persist memory, sessions, executions, events, gate evidence, and release decisions
 6. synchronize work artifacts and lifecycle state to upstream Paperclip
-7. inspect the entire lifecycle in the web dashboard and API
+7. inspect the entire lifecycle in an **Ultra-Premium Obsidian Glass Dashboard** with high-fidelity visualizations and real-time chat control
 
 ## 2. System Knowledge Graph
 
@@ -93,6 +104,7 @@ The supported local stack is seven active services plus a shared store:
 
 ### Live endpoints
 
+- **unified access point: `http://localhost:8888`** (recommended)
 - control plane: `http://localhost:4100`
 - web dashboard: `http://localhost:4173`
 - Paperclip API: `http://127.0.0.1:3100`
@@ -101,12 +113,15 @@ The supported local stack is seven active services plus a shared store:
 - OpenClaw health: `http://127.0.0.1:28789/healthz`
 - Redis queue: `redis://127.0.0.1:6380`
 
+**Note:** The unified access point provides both the dashboard and API on a single port. All features are available through `http://localhost:8888`.
+
 ## 4. Repository Map
 
 ```text
 apps/
   cli/             Terminal User Interface (TUI) for interactive task execution
   control-plane/   Express API, auth, approvals, queue producer, Paperclip sync
+  unified/         Unified server serving dashboard + API on a single port
   worker/          BullMQ consumer, runtime adapters, verification runner
   web/             Vite/React operational dashboard
 mcp/               Integrated MCP (Model Context Protocol) servers
@@ -121,6 +136,7 @@ docs/
   templates/       Superpowers-aligned spec/plan templates
 scripts/
   setup/dev/test/demo/clean/start/stop entrypoints
+  start-unified.sh  Start all services with unified access point
 tests/
   API, orchestration, adapter, and end-to-end verification
 infra/
@@ -202,7 +218,23 @@ When you deploy the web app to Vercel, GitHub Pages, or a custom host, update th
 
 ## 8. Operator Workflows
 
-### Workflow A: Full-stack local run
+### Workflow A: Full-stack local run (Unified Access)
+
+```bash
+./scripts/unified
+```
+
+Then:
+
+1. open `http://localhost:8888` (single URL for everything)
+2. log in with one of the local accounts
+3. create a task
+4. approve it as an `approver` or `admin`
+5. watch the task move through `queued -> running -> completed/released`
+
+The unified server provides both the dashboard and API on port 8888. The dashboard automatically discovers the API at the same origin.
+
+### Workflow B: Traditional multi-port run
 
 ```bash
 ./scripts/dev.sh
@@ -216,7 +248,7 @@ Then:
 4. approve it as an `approver` or `admin`
 5. watch the task move through `queued -> running -> completed/released`
 
-### Workflow B: One-command lifecycle proof
+### Workflow D: One-command lifecycle proof
 
 ```bash
 ./scripts/demo.sh
@@ -238,7 +270,7 @@ DEMO_PROVIDER=hermes ./scripts/demo.sh
 DEMO_PROVIDER=openclaw ./scripts/demo.sh
 ```
 
-### Workflow C: Release gate proof
+### Workflow E: Release gate proof
 
 ```bash
 pnpm release:local
@@ -533,3 +565,4 @@ npm run clean
 - [docs/SECURITY_MODEL.md](/home/donovan/Projects/Auto/docs/SECURITY_MODEL.md)
 - [docs/OPEN_GAPS.md](/home/donovan/Projects/Auto/docs/OPEN_GAPS.md)
 - [AGENTS.md](/home/donovan/Projects/Auto/AGENTS.md)
+# Auto
