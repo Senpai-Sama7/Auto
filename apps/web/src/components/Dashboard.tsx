@@ -1,4 +1,4 @@
-import { SpendChart, SystemHealthRing, TaskDistributionChart } from "./Visualizations.js";
+import { SystemHealthRing } from "./Visualizations.js";
 
 type DashboardProps = {
   workspaceName: string;
