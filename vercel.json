@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "bash scripts/build-web.sh",
+  "buildCommand": "pnpm --filter @ultimate-system/web build && mkdir -p dist && cp -r apps/web/dist/* dist/",
   "outputDirectory": "dist",
   "env": {
     "PNPM_IGNORE_PACKAGE_MANAGER_VERSION": "true"
