@@ -3,7 +3,20 @@ node_modules
 dist
 .turbo
 .DS_Store
+
+# Environment files with secrets
 .env
+.env.*
+*.env
+*.env.*
+.env.local
+.evn.local
+*.local
+
+# GCP and cloud credentials (specific patterns)
+project-*.json
+
+# Data directories
 data
 apps/**/data
 coverage
@@ -21,3 +34,31 @@ npm-debug.log*
 build-preflight.log
 typecheck-preflight.log
 lint-preflight.log
+
+# Editor and IDE files
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS files
+Thumbs.dbvite
+*.tsbuildinfo
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+build-preflight.log
+typecheck-preflight.log
+lint-preflight.log
+
+# Editor and IDE files
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
