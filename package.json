@@ -7,6 +7,22 @@
   "engines": {
     "node": ">=22"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "better-sqlite3",
+      "cpu-features",
+      "esbuild",
+      "msgpackr-extract",
+      "protobufjs",
+      "puppeteer",
+      "sharp",
+      "ssh2",
+      "tesseract.js",
+      "unrs-resolver",
+      "vue-demi"
+    ]
+  },
   "scripts": {
     "dev": "concurrently -n api,worker,web -c blue,green,magenta \"pnpm --filter @ultimate-system/control-plane dev\" \"pnpm --filter @ultimate-system/worker dev\" \"pnpm --filter @ultimate-system/web dev\"",
     "dev:api": "pnpm --filter @ultimate-system/control-plane dev",
