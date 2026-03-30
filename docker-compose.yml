@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: ultimate-redis
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  ultimate-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ultimate-system
+    ports:
+      - "8888:8888"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=/data/ultimate-system.db
+      - REDIS_URL=redis://redis:6379
+      - AUTH_ORIGINS=http://localhost:8888,http://localhost:4173
+      - AUTH_RP_IDS=localhost
+      - UNIFIED_PORT=8888
+      - SESSION_SECRET=${SESSION_SECRET:-change-this-secret-in-production}
+      - ULTIMATE_SYSTEM_ADMIN_EMAIL=${ULTIMATE_SYSTEM_ADMIN_EMAIL:-admin@ultimate-system.local}
+      - ULTIMATE_SYSTEM_ADMIN_PASSWORD=${ULTIMATE_SYSTEM_ADMIN_PASSWORD:-change-this-password}
+      - ULTIMATE_SYSTEM_REQUESTER_EMAIL=${ULTIMATE_SYSTEM_REQUESTER_EMAIL:-requester@ultimate-system.local}
+      - ULTIMATE_SYSTEM_REQUESTER_PASSWORD=${ULTIMATE_SYSTEM_REQUESTER_PASSWORD:-requester-password}
+      - ULTIMATE_SYSTEM_APPROVER_EMAIL=${ULTIMATE_SYSTEM_APPROVER_EMAIL:-approver@ultimate-system.local}
+      - ULTIMATE_SYSTEM_APPROVER_PASSWORD=${ULTIMATE_SYSTEM_APPROVER_PASSWORD:-approver-password}
+      - ULTIMATE_SYSTEM_VIEWER_EMAIL=${ULTIMATE_SYSTEM_VIEWER_EMAIL:-viewer@ultimate-system.local}
+      - ULTIMATE_SYSTEM_VIEWER_PASSWORD=${ULTIMATE_SYSTEM_VIEWER_PASSWORD:-viewer-password}
+    volumes:
+      - ./data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const options = { hostname: 'localhost', port: 8888, path: '/api/health', timeout: 2000 }; const req = http.get(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1));"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  redis-data:
