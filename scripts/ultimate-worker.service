@@ -1,0 +1,34 @@
+[Unit]
+Description=Ultimate System Worker
+Documentation=https://github.com/anomalyco/ultimate-system
+After=network.target redis.service ultimate-control-plane.service
+Requires=ultimate-control-plane.service
+
+[Service]
+Type=simple
+User=ultimate
+Group=ultimate
+WorkingDirectory=/opt/ultimate-system
+ExecStart=/usr/bin/node apps/worker/dist/worker.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ultimate-worker
+
+# Environment
+EnvironmentFile=/opt/ultimate-system/.env
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/ultimate-system/data
+
+# Resource Limits
+LimitNOFILE=65536
+MemoryMax=4G
+
+[Install]
+WantedBy=multi-user.target
