@@ -1,15 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm --filter @ultimate-system/web build && cp -r apps/web/dist dist",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build && cp -r dist ../dist-revenue",
   "outputDirectory": "dist",
-  "devCommand": "pnpm --filter @ultimate-system/web dev",
+  "devCommand": "npm run dev",
   "cleanUrls": true,
   "trailingSlash": false,
   "env": {
-    "PNPM_IGNORE_PACKAGE_MANAGER_VERSION": "true",
-    "VITE_BASE_PATH": "/"
+    "VITE_BASE_PATH": "/revenue/"
   },
   "headers": [
     {
@@ -30,10 +29,6 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
     },
@@ -49,11 +44,7 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
